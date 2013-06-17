@@ -1,0 +1,50 @@
+ntfs_using_fuse{
+	output{
+		ntfs is using FUSE {number}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="ntfs-3g"
+		MESSAGE="Version\ 20\d\d\.\d\d?\.\d\d?\ external\ FUSE\ \d\d?"
+		PRIORITY="5"
+	}
+	values{
+		number{
+			read MESSAGE
+			regex "\ \d\d?$"
+			cutl 1
+		}
+	}
+}
+ntfs_ownership{
+	output{
+		ntfs permission & ownership enforced\nconfiguration type {config_type}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="ntfs-3g"
+		MESSAGE="Global\ ownership\ and\ permissions\ enforced,\ configuration\ type\ \d"
+		PRIORITY="5"
+	}
+	values{
+		config_type{
+			read MESSAGE
+			regex "\d$"
+		}
+	}
+}
+ntfs_unmount{
+	output{
+		ntfs unmounted {device}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="ntfs-3g"
+		MESSAGE="Unmounting\ (\/|\w)+\ \(\w+\)"
+		PRIORITY="5"
+	}
+	values{
+		device{
+			read MESSAGE
+			regex "Unmounting\  (\/|\w)+"
+			cutl 6
+		}
+	}
+}

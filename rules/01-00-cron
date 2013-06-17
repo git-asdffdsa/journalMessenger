@@ -1,0 +1,16 @@
+cron{
+	output{
+		cron started cron.{time}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="CROND"
+		MESSAGE="\(\w+\)\ CMD\ \(run\-parts\ [^\)]*\)"
+	}
+	values{
+		time{
+			read MESSAGE
+			regex "[^\.]\w+[\)]\Z"
+			cutr -1
+		}
+	}
+}

@@ -1,0 +1,48 @@
+sudo{
+	output{
+		user {user} used sudo on {command}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="sudo"
+		PRIORITY="5"
+		MESSAGE="\w+\ :\ TTY=\S+\ ;\ PWD=\S+\ ;\ USER=\S+\ ;\ COMMAND=\S+"
+	}
+	values{
+		user{
+			read MESSAGE
+			regex "\A\w+"
+		}
+		command{
+			read MESSAGE
+			regex "[^=]+\Z"
+		}
+	}
+}
+gained_root{
+	output{
+		{command} gained root priorities
+	}
+	filter{
+		PRIORITY="6"
+		MESSAGE="pam_unix\(\w+:session\):\ session\ opened\ for\ user\ root\ by\ \(uid=0\)"
+	}
+	values{
+		command{
+			read SYSLOG_IDENTIFIER
+		}
+	}
+}
+lost_root{
+	output{
+		{command} lost root priorities
+	}
+	filter{
+		PRIORITY="6"
+		MESSAGE="pam_unix\(\w+:session\):\ session\ closed\ for\ user\ root"
+	}
+	values{
+		command{
+			read SYSLOG_IDENTIFIER
+		}
+	}
+}

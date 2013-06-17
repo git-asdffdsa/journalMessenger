@@ -1,0 +1,183 @@
+kernel_device_write_protection{
+	output{
+		Write protection for /dev/{device} is {status}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="kernel"
+		MESSAGE="sd\ \d+:\d+:\d+:\d+:\ \[\w+\]\ Write\ Protect\ is\ (off|on)"
+		PRIORITY="5"
+	}
+	values{
+		device{
+			read MESSAGE
+			regex "\ \[\w+\]\ "
+			cutl 2
+			cutr -2
+		}
+		status{
+			read MESSAGE
+			regex "\ \w+$"
+			cutl 1
+		}
+	}
+}
+kernel_device_size{
+	output{
+		/dev/{device} has a capacity of {size}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="kernel"
+		MESSAGE="sd\ \d+:\d+:\d+:\d+:\ \[\w+\]\ \d+\ \d+-byte\ logical\ blocks:\ \(\d+\ \w+\/\d+\ \w+\)"
+		PRIORITY="5"
+	}
+	values{
+		device{
+                        read MESSAGE
+                        regex "\ \[\w+\]\ "
+                        cutl 2
+                        cutr -2
+                }
+		size{
+			read MESSAGE
+			regex "\d+\ \w+\)$"
+			cutr -1
+		}
+	}
+}
+kernel_device_scsi_type{
+	output{
+		accessing device over scsi\ndevice type:\n{device_type}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="kernel"
+		MESSAGE="scsi\ \d+:\d+:\d+:\d+:\ Direct-Access\ {5}.+\ {3}\d\d\.\d\ PQ:\ \d\ ANSI:\ \d"
+		PRIORITY="5"
+	}
+	values{
+		device_type{
+			read MESSAGE
+			regex "\ {5}.+\ {3}"
+			cutl 5
+			cutr -3
+		}
+	}
+}
+systemd_device_mounted{
+	output{
+		device mounted on {mountpoint}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="systemd"
+		MESSAGE="Mounted\ (\w|\/)+\."
+		PRIORITY="6"
+	}
+	values{
+		mountpoint{
+			read MESSAGE
+			regex "\ (\w|\/)+\.$"
+			cutl 1
+			cutr -1
+		}
+	}
+}
+systemd_device_unmounted{
+	output{
+		device on mountpoint {mountpoint} unmounted
+	}
+	filter{
+		SYSLOG_IDENTIFIER="systemd"
+		MESSAGE="Unmounted\ (\w|\/)+\."
+		PRIORITY="6"
+	}
+	values{
+		mountpoint{
+			read MESSAGE
+                        regex "\ (\w|\/)+\.$"
+                        cutl 1
+                        cutr -1
+                }
+        }
+}
+systemd_device_unmounting{
+	output{
+		umounting device on mountpoint {mountpoint}...
+	}
+	filter{
+		SYSLOG_IDENTIFIER="systemd"
+		MESSAGE="Unmounting\ (\w|\/)+\.{3}"
+		PRIORITY="6"
+	}
+	values{
+		mountpoint{
+			read MESSAGE
+			regex "\ (\w|\/)+\.{3}$"
+			cutl 1
+			cutr -3
+		}
+	}
+}
+kernel_device_udisable_failed{
+	output{
+		{message}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="kernel"
+		MESSAGE="usb\ \d(-\d)*:\ Disable\ of\ device-initiated\ U\d\ failed\."
+		PRIORITY="4"
+	}
+	values{
+		message{
+			read MESSAGE
+		}
+	}
+}
+kernel_device_scsi_attached{
+	output{
+		/dev/{device} is an SCSI disk
+	}
+	filter{
+		SYSLOG_IDENTIFIER="kernel"
+		MESSAGE="sd\ \d+:\d+:\d+:\d+:\ \[\w+\]\ Attached SCSI disk"
+		PRIORITY="5"
+	}
+	values{
+		device{
+			read MESSAGE
+			regex "\ \[\w+\]\ "
+			cutl 2
+			cutr -2
+		}
+	}
+}
+kernel_usb_disconnected{
+	output{
+		device on {usb} disconnected
+	}
+	filter{
+		SYSLOG_IDENTIFIER="kernel"
+		MESSAGE="usb\ \d(-\d)*:\ USB\ disconnected,\ device\ number\ \d"
+		PRIORITY="6"
+	}
+	values{
+		usb{
+			read MESSAGE
+			regex "^usb\ \d(-\d)*"
+		}
+	}
+}
+kernel_partition_accessable{
+	output{
+		new partition accessable on /dev/{partition}
+	}
+	filter{
+		SYSLOG_IDENTIFIER="kernel"
+		MESSAGE="\w+:\ \w+\d+"
+		PRIORITY="6"
+	}
+	values{
+		partition{
+			read MESSAGE
+			regex "\w+\d+$"
+		}
+	}
+}

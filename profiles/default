@@ -1,0 +1,8 @@
+nosurpress .*
+surpress{
+	other
+	slim.*
+	slim
+	slim_badWindow
+	slim_badDrawable
+}
