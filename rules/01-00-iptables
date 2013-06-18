@@ -1,4 +1,4 @@
-ping{
+iptables_ping{
 	output{
 		pinged by {ip} || {host}
 	}
@@ -19,9 +19,9 @@ ping{
 		}
 	}
 }
-portscan{
+iptables_connection{
 	output{
-		portscanned by {ip}\nhost:{host} \nFlags: {flags}
+		Invalid connection by {ip}\nhostname:{host} \nFlags: {flags}
 	}
 	filter{
 		SYSLOG_IDENTIFIER="kernel"

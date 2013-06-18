@@ -1,4 +1,4 @@
-cron{
+cron_started{
 	output{
 		cron started cron.{time}
 	}

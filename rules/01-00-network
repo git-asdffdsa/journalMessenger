@@ -1,0 +1,90 @@
+netctl_stopping_profile{
+	output{
+		{message}
+	}
+	filter{
+		SYSLOG_NOTIFIER="network"
+		MESSAGE="stopping\ network\ profile\ \'\w+\'\.{3}"
+		PRIORITY="6"
+	}
+	values{
+		message{
+			read MESSAGE
+		}
+	}
+}
+netctl_stopped_profile{
+	output{
+		{message}
+	}
+	filter{
+		SYSLOG_NOTIFIER="network"
+		MESSAGE="stopped\ network\ profile\ \'\w+\'"
+		PRIORITY="6"
+	}
+	values{
+		message{
+			read MESSAGE
+		}
+	}
+}
+avahi_withdrawing_address_ip{
+	output{
+		withdrawing ip address record from device '{device}'
+	}
+	filter{
+		SYSLOG_IDENTIFIER="avahi-daemon"
+		MESSAGE="Withdrawing\ address\ record\ for\ (\d{1-3}\.){3}\d{1-3}\ on\ (\w|\d|_|-)+\."
+		PRIORITY="6"
+	}
+	values{
+		device{
+			read MESSAGE
+			regex "\ on\ (\w|\d|_|-)+\.$"
+			cutl 4
+			cutr -1
+		}
+	}
+}
+avahi_withdrawing_address_mac{
+	output{
+		withdrawing mac address record from device '{device}'
+	}
+	filter{
+		SYSLOG_IDENTIFIER="avahi-daemon"
+		MESSAGE="Withdrawing\ address\ record\ for\ ((\w|\d){2-3}:){3}(\w|\d){2-3}\ on\ (\w|\d|_|-)+\."
+		PRIORITY="6"
+	}
+	values{
+		device{
+                        read MESSAGE
+                        regex "\ on\ (\w|\d|_|-)+\.$"
+                        cutl 4
+                        cutr -1
+		}
+	}
+}
+avahi_registering_address_ip{
+	output{
+		registered ip address\n{address}\nto device '{device}'
+	}
+	filter{
+		SYSLOG_IDENTIFIER="avahi-daemon"
+		MESSAGE="Registering\ new\ address\ record\ for\ (\d{1-3}\.){3}\d{1-3}\ on\ (\w|\d|_|-|\.)+\."
+		PRIORITY="6"
+	}
+	values{
+		address{
+			read MESSAGE
+			regex "\ for\ (\d{1-3}\.){3}\d{1-3}\ on\ "
+			cutl 5
+			cutr -4
+		}
+		device{
+		       read MESSAGE
+                        regex "\ on\ (\w|\d|_|-|.)+\.$"
+                        cutl 4
+                        cutr -1
+                }       
+        }       
+}

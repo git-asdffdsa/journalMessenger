@@ -98,6 +98,24 @@ systemd_device_unmounted{
                 }
         }
 }
+systemd_device_mounting{
+	output{
+		mounting device on mountpoint {mountpoint}...
+	}
+	filter{
+		SYSLOG_IDENTIFIER="systemd"
+                MESSAGE="Mounting\ (\w|\/)+\.{3}"
+                PRIORITY="6"
+        }
+        values{
+                mountpoint{
+                        read MESSAGE
+                        regex "\ (\w|\/)+\.{3}$"
+                        cutl 1
+                        cutr -3
+                }
+        }
+}
 systemd_device_unmounting{
 	output{
 		umounting device on mountpoint {mountpoint}...

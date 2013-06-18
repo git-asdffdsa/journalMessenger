@@ -1,17 +1,24 @@
-slim_badWindow{
+dm_slim_badWindow{
+	output{
+		slim had an error number 3:\nBadWindow (invalid Window parameter)
+	}
 	filter{
 		SYSLOG_IDENTIFIER="slim"
 		MESSAGE="error\ 3:\ BadWindow\ \(invalid Window parameter\)\ request\ \d{1,3}\ minor\ \d{1,3}\ serial\ \d{5,9}"
+		PRIORITY="6"
 	}
 }
-slim_badDrawable{
+dm_slim_badDrawable{
+	output{
+		slim had an error number 9:\nBadDrawable (invalid Pixmap or Window parameter)
+	}
 	filter{
 		SYSLOG_IDENTIFIER="slim"
 		MESSAGE="error\ 9:\ BadDrawable\ \(invalid Pixmap or Window parameter\)\ request\ \d{1,3}\ minor\ \d{1,3}\ serial\ \d{5,9}"
+		PRIORITY="6"
 	}
 }
-slim{
-	surpress
+dm_slim{
 	output{
 		slim: {message}
 	}

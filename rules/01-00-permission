@@ -1,4 +1,4 @@
-sudo{
+sudo_used{
 	output{
 		user {user} used sudo on {command}
 	}
@@ -18,7 +18,7 @@ sudo{
 		}
 	}
 }
-gained_root{
+root_gained{
 	output{
 		{command} gained root priorities
 	}
@@ -32,7 +32,7 @@ gained_root{
 		}
 	}
 }
-lost_root{
+root_lost{
 	output{
 		{command} lost root priorities
 	}
