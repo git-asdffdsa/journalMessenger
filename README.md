@@ -11,13 +11,13 @@ This means, rules read in first (they are read alphabetically) are matched first
 The rules heavily depend on regex, as well as the profiles. 
 Q&A
 ---
-<dl>
-  <dt>what can this be used for?</dt>
-  <dd>you can automatically get informed by your notification manager if a certain information is logged (e.g. there has been an error, something was mounted, etc.)</dt>
-  <dd>you can easily format & clarify a certain log (e.g. there must be something suspicious within this log)</dd>
-  <dt>how do I use it?</dt>
-  <dd>use './journalMessenger.py --help' for more information</dd>
-  <dt>I get an error by systemd/journal.py / the journal live feed is buggy</dt>
-  <dd>Currently, the systemd python module may be broken for some (actually fixed by now, see http://cgit.freedesktop.org/systemd/systemd/commit/?id=0a0c35d151570), in which case you can workaround it by using</dd>
-</dl>
-    journalctl -f -n 0 --output=json | ./journalMessenger.py --input stdin
+*   *what can this be used for?*
+   *   you can automatically get informed by your notification manager if a certain information is logged (e.g. there has been an error, something was mounted, etc.)
+   *   you can easily format & clarify a certain log (e.g. there must be something suspicious within this log)
+*   *how do I use it?*
+   *   use ```./journalMessenger.py --help``` for more information
+*   *I get an error by systemd/journal.py / the journal live feed is buggy*
+   *   Currently, the systemd python module may be broken for some (actually fixed by now,
+see [this commit](http://cgit.freedesktop.org/systemd/systemd/commit/?id=0a0c35d151570)), in which case you can workaround it by using
+  ```journalctl -f -n 0 --output=json | ./journalMessenger.py --input stdin```
+    
