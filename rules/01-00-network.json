@@ -1,0 +1,82 @@
+{
+    "netctl_stopping_profile": {
+        "values": {
+            "message": [
+                "read MESSAGE"
+            ]
+        },
+        "filters": {
+            "PRIORITY": "6",
+            "MESSAGE": "stopping\\ network\\ profile\\ \\'\\w+\\'\\.{3}",
+            "SYSLOG_NOTIFIER": "network"
+        },
+        "output": "{message}"
+    },
+    "avahi_registering_address_ip": {
+        "values": {
+            "device": [
+                "read MESSAGE",
+                "regex \\ on\\ (\\w|\\d|_|-|.)+\\.$",
+                "cutl 4",
+                "cutr -1"
+            ],
+            "address": [
+                "read MESSAGE",
+                "regex \\ for\\ (\\d{1-3}\\.){3}\\d{1-3}\\ on\\ ",
+                "cutl 5",
+                "cutr -4"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "avahi-daemon",
+            "PRIORITY": "6",
+            "MESSAGE": "Registering\\ new\\ address\\ record\\ for\\ (\\d{1-3}\\.){3}\\d{1-3}\\ on\\ (\\w|\\d|_|-|\\.)+\\."
+        },
+        "output": "registered ip address\\n{address}\\nto device '{device}'"
+    },
+    "avahi_withdrawing_address_ip": {
+        "values": {
+            "device": [
+                "read MESSAGE",
+                "regex \\ on\\ (\\w|\\d|_|-)+\\.$",
+                "cutl 4",
+                "cutr -1"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "avahi-daemon",
+            "PRIORITY": "6",
+            "MESSAGE": "Withdrawing\\ address\\ record\\ for\\ (\\d{1-3}\\.){3}\\d{1-3}\\ on\\ (\\w|\\d|_|-)+\\."
+        },
+        "output": "withdrawing ip address record from device '{device}'"
+    },
+    "avahi_withdrawing_address_mac": {
+        "values": {
+            "device": [
+                "read MESSAGE",
+                "regex \\ on\\ (\\w|\\d|_|-)+\\.$",
+                "cutl 4",
+                "cutr -1"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "avahi-daemon",
+            "PRIORITY": "6",
+            "MESSAGE": "Withdrawing\\ address\\ record\\ for\\ ((\\w|\\d){2-3}:){3}(\\w|\\d){2-3}\\ on\\ (\\w|\\d|_|-)+\\."
+        },
+        "output": "withdrawing mac address record from device '{device}'"
+    },
+    "netctl_stopped_profile": {
+        "values": {
+            "message": [
+                "read MESSAGE"
+            ]
+        },
+        "filters": {
+            "PRIORITY": "6",
+            "MESSAGE": "stopped\\ network\\ profile\\ \\'\\w+\\'",
+            "SYSLOG_NOTIFIER": "network"
+        },
+        "output": "{message}"
+    }
+}

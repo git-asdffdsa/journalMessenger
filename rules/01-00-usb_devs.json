@@ -1,0 +1,181 @@
+{
+    "kernel_device_scsi_attached": {
+        "values": {
+            "device": [
+                "read MESSAGE",
+                "regex \\ \\[\\w+\\]\\ ",
+                "cutl 2",
+                "cutr -2"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "kernel",
+            "PRIORITY": "5",
+            "MESSAGE": "sd\\ \\d+:\\d+:\\d+:\\d+:\\ \\[\\w+\\]\\ Attached SCSI disk"
+        },
+        "output": "/dev/{device} is an SCSI disk"
+    },
+    "systemd_device_mounted": {
+        "values": {
+            "mountpoint": [
+                "read MESSAGE",
+                "regex \\ (\\w|\\/)+\\.$",
+                "cutl 1",
+                "cutr -1"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "systemd",
+            "PRIORITY": "6",
+            "MESSAGE": "Mounted\\ (\\w|\\/)+\\."
+        },
+        "output": "device mounted on {mountpoint}"
+    },
+    "kernel_partition_accessable": {
+        "values": {
+            "partition": [
+                "read MESSAGE",
+                "regex \\w+\\d+$"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "kernel",
+            "PRIORITY": "6",
+            "MESSAGE": "\\w+:\\ \\w+\\d+"
+        },
+        "output": "new partition accessable on /dev/{partition}"
+    },
+    "kernel_device_write_protection": {
+        "values": {
+            "device": [
+                "read MESSAGE",
+                "regex \\ \\[\\w+\\]\\ ",
+                "cutl 2",
+                "cutr -2"
+            ],
+            "status": [
+                "read MESSAGE",
+                "regex \\ \\w+$",
+                "cutl 1"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "kernel",
+            "PRIORITY": "5",
+            "MESSAGE": "sd\\ \\d+:\\d+:\\d+:\\d+:\\ \\[\\w+\\]\\ Write\\ Protect\\ is\\ (off|on)"
+        },
+        "output": "Write protection for /dev/{device} is {status}"
+    },
+    "systemd_device_unmounting": {
+        "values": {
+            "mountpoint": [
+                "read MESSAGE",
+                "regex \\ (\\w|\\/)+\\.{3}$",
+                "cutl 1",
+                "cutr -3"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "systemd",
+            "PRIORITY": "6",
+            "MESSAGE": "Unmounting\\ (\\w|\\/)+\\.{3}"
+        },
+        "output": "umounting device on mountpoint {mountpoint}..."
+    },
+    "kernel_device_udisable_failed": {
+        "values": {
+            "message": [
+                "read MESSAGE"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "kernel",
+            "PRIORITY": "4",
+            "MESSAGE": "usb\\ \\d(-\\d)*:\\ Disable\\ of\\ device-initiated\\ U\\d\\ failed\\."
+        },
+        "output": "{message}"
+    },
+    "kernel_device_scsi_type": {
+        "values": {
+            "device_type": [
+                "read MESSAGE",
+                "regex \\ {5}.+\\ {3}",
+                "cutl 5",
+                "cutr -3"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "kernel",
+            "PRIORITY": "5",
+            "MESSAGE": "scsi\\ \\d+:\\d+:\\d+:\\d+:\\ Direct-Access\\ {5}.+\\ {3}\\d\\d\\.\\d\\ PQ:\\ \\d\\ ANSI:\\ \\d"
+        },
+        "output": "accessing device over scsi\\ndevice type:\\n{device_type}"
+    },
+    "kernel_device_size": {
+        "values": {
+            "device": [
+                "read MESSAGE",
+                "regex \\ \\[\\w+\\]\\ ",
+                "cutl 2",
+                "cutr -2"
+            ],
+            "size": [
+                "read MESSAGE",
+                "regex \\d+\\ \\w+\\)$",
+                "cutr -1"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "kernel",
+            "PRIORITY": "5",
+            "MESSAGE": "sd\\ \\d+:\\d+:\\d+:\\d+:\\ \\[\\w+\\]\\ \\d+\\ \\d+-byte\\ logical\\ blocks:\\ \\(\\d+\\ \\w+\\/\\d+\\ \\w+\\)"
+        },
+        "output": "/dev/{device} has a capacity of {size}"
+    },
+    "kernel_usb_disconnected": {
+        "values": {
+            "usb": [
+                "read MESSAGE",
+                "regex ^usb\\ \\d(-\\d)*"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "kernel",
+            "PRIORITY": "6",
+            "MESSAGE": "usb\\ \\d(-\\d)*:\\ USB\\ disconnected,\\ device\\ number\\ \\d"
+        },
+        "output": "device on {usb} disconnected"
+    },
+    "systemd_device_unmounted": {
+        "values": {
+            "mountpoint": [
+                "read MESSAGE",
+                "regex \\ (\\w|\\/)+\\.$",
+                "cutl 1",
+                "cutr -1"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "systemd",
+            "PRIORITY": "6",
+            "MESSAGE": "Unmounted\\ (\\w|\\/)+\\."
+        },
+        "output": "device on mountpoint {mountpoint} unmounted"
+    },
+    "systemd_device_mounting": {
+        "values": {
+            "mountpoint": [
+                "read MESSAGE",
+                "regex \\ (\\w|\\/)+\\.{3}$",
+                "cutl 1",
+                "cutr -3"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "systemd",
+            "PRIORITY": "6",
+            "MESSAGE": "Mounting\\ (\\w|\\/)+\\.{3}"
+        },
+        "output": "mounting device on mountpoint {mountpoint}..."
+    }
+}

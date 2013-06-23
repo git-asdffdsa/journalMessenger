@@ -1,0 +1,44 @@
+{
+    "sudo_used": {
+        "values": {
+            "user": [
+                "read MESSAGE",
+                "regex \\A\\w+"
+            ],
+            "command": [
+                "read MESSAGE",
+                "regex [^=]+\\Z"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "sudo",
+            "MESSAGE": "\\w+\\ :\\ TTY=\\S+\\ ;\\ PWD=\\S+\\ ;\\ USER=\\S+\\ ;\\ COMMAND=\\S+",
+            "PRIORITY": "5"
+        },
+        "output": "user {user} used sudo on {command}"
+    },
+    "root_gained": {
+        "values": {
+            "command": [
+                "read SYSLOG_IDENTIFIER"
+            ]
+        },
+        "filters": {
+            "MESSAGE": "pam_unix\\(\\w+:session\\):\\ session\\ opened\\ for\\ user\\ root\\ by\\ \\(uid=0\\)",
+            "PRIORITY": "6"
+        },
+        "output": "{command} gained root priorities"
+    },
+    "root_lost": {
+        "values": {
+            "command": [
+                "read SYSLOG_IDENTIFIER"
+            ]
+        },
+        "filters": {
+            "MESSAGE": "pam_unix\\(\\w+:session\\):\\ session\\ closed\\ for\\ user\\ root",
+            "PRIORITY": "6"
+        },
+        "output": "{command} lost root priorities"
+    }
+}

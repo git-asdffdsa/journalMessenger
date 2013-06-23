@@ -1,0 +1,31 @@
+{
+    "dm_slim_badDrawable": {
+        "values": {},
+        "filters": {
+            "SYSLOG_IDENTIFIER": "slim",
+            "PRIORITY": "6",
+            "MESSAGE": "error\\ 9:\\ BadDrawable\\ \\(invalid Pixmap or Window parameter\\)\\ request\\ \\d{1,3}\\ minor\\ \\d{1,3}\\ serial\\ \\d{5,9}"
+        },
+        "output": "slim had an error number 9:\\nBadDrawable (invalid Pixmap or Window parameter)"
+    },
+    "dm_slim_badWindow": {
+        "values": {},
+        "filters": {
+            "SYSLOG_IDENTIFIER": "slim",
+            "PRIORITY": "6",
+            "MESSAGE": "error\\ 3:\\ BadWindow\\ \\(invalid Window parameter\\)\\ request\\ \\d{1,3}\\ minor\\ \\d{1,3}\\ serial\\ \\d{5,9}"
+        },
+        "output": "slim had an error number 3:\\nBadWindow (invalid Window parameter)"
+    },
+    "dm_slim": {
+        "values": {
+            "message": [
+                "read MESSAGE"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "slim"
+        },
+        "output": "slim: {message}"
+    }
+}

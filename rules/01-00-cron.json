@@ -1,0 +1,16 @@
+{
+    "cron_started": {
+        "values": {
+            "time": [
+                "read MESSAGE",
+                "regex [^\\.]\\w+[\\)]\\Z",
+                "cutr -1"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "CROND",
+            "MESSAGE": "\\(\\w+\\)\\ CMD\\ \\(run\\-parts\\ [^\\)]*\\)"
+        },
+        "output": "cron started cron.{time}"
+    }
+}

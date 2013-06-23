@@ -1,64 +1,29 @@
+import json
 import re
+import sys
 
-def readrules(f, emptyList, argList, allFilters, allValues, allValueNames, allOutput, allSurpress, allNames):
-	for name in f:
-		values = []
-		valueNames = []
-		output = ""
-		surpress = False
-		filters = emptyList[:]
-		for comesNext in f:
-			comesNext = comesNext.strip()
-			if comesNext == "}":
-				break
-			if comesNext == "output{":
-				output = f.readline().strip()
-				f.readline()
-			elif comesNext == "filter{":
-				for line in f:
-					if line.strip() == "}":
-						break
-					arg = line.strip()[:line.find("=") - 2]
-					value = line.strip()[line.find("=") - 1:]
-					if value[0] == '"' and value[-1:] == '"':
-						value = value[1:-1]
-					try:
-						filters[argList.index(arg)] = value
-					except ValueError:
-						argList.append(arg)
-						filters.append(value)
-						emptyList.append(0)
-			elif comesNext == "values{":
-				for value in f:
-					if value.strip() == "}":
-						break
-					if value.strip()[-1:] != "{":
-						raise ValueError
-					valueNames.append(value.strip()[:-1])
-					commandList = []
-					for command in f:
-						if command.strip() == "}":
-							break
-						commandList.append(command.strip())
-					values.append(commandList)
-			elif comesNext == "surpress":
-				surpress = True
-			else:
-				print(comesNext)
-				raise ValueError
-		allFilters.append(filters)
-		allValues.append(values)
-		allValueNames.append(valueNames)
-		allOutput.append(output)
-		allSurpress.append(surpress)
-		allNames.append(name[:-2])
-def setSurpression(entryName, surpress, allNames, allSurpress):
-	i = 0
-	for name in allNames:
-		if re.match(entryName, name):
-			allSurpress[i] = surpress
-		i += 1
-def readprofile(f, allNames, allSurpress):
+#local module
+import ruleClass
+
+#read rules out of a json formatted file
+def readrules (f, rules):
+	ruleJson = json.loads(f.read())
+	for rule in ruleJson:
+		currentRule = ruleClass.rule()
+		#rule is the name, ruleJson[rule] is the dict
+		currentRule.readDict(rule,ruleJson[rule])
+		if currentRule.isValid():
+			rules.append(currentRule)
+		else:
+			sys.stderr.write('Error: rule ' + rule + ' contains invalid commands. Rule will be skipped.\n')
+
+#set surpression status for every rule whichs name matches 'ruleMatch' to 'surpress'
+def setSurpression(entryName, surpress, rules):
+	for rule in rules:
+		if re.match(entryName, rule.name):
+			rule.surpress = surpress
+#read a profile
+def readprofile(f, rules):
 	for line in f:
 		line = line.strip()
 		if line[-1:] == '{':
@@ -71,8 +36,8 @@ def readprofile(f, allNames, allSurpress):
 			for inLine in f:
 				if inLine.strip() == '}':
 					break
-				setSurpression(inLine.strip(), surpression, allNames, allSurpress)
+				setSurpression(inLine.strip(), surpression, rules )
 		elif line[:9] == 'surpress ':
-			setSurpression(line[9:], True, allNames, allSurpress)
+			setSurpression(line[9:], True, rules)
 		elif line[:11] == 'nosurpress ':
-			setSurpression(line[11:], False, allNames, allSurpress)
+			setSurpression(line[11:], False, rules)

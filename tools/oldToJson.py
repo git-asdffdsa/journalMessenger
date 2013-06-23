@@ -5,17 +5,11 @@ import os
 import argparse
 import json
 
-helpOutput = '''
-Usage:
- oldToJson [options] /path/to/oldRules/
-Options:
- -h, --help             display this output
- -a, --append <ending>  append .<ending> to every file
- -p, --path <path>      store json files to <path>
- -f, --force            do not ask before overwriting existing files
- -u, --ugly             output non-fancy, but short json
-'''
-
+def askPermission():
+	ch = sys.stdin.readline()
+	if ch in 'yes Yes ':
+		return True
+	return False
 
 def tryLineOpens(line):
 	if not line[-1:] == "{":
@@ -100,14 +94,15 @@ def remQuot(listOfRules):
 				if secondPart[:1] == '"' and secondPart[-1:] == '"':
 					if firstPart == "regex":
 						secondPart = secondPart[1:-1]
-				listOfRules[rule]['values'][value][i] = firstPart + " " + secondPart
+				if not command == secondPart:
+					listOfRules[rule]['values'][value][i] = firstPart + " " + secondPart
 				i += 1
 	return listOfRules
 #change one single file
 def changeFile(inputFile, outputFile, makeFancy, force):
 	if not force and os.path.exists(outputFile):
 		print("The file " + outputFile + " does already exist. Overwrite? (Y/N)")
-		if not sys.stdin.read(1) in 'yY':
+		if not askPermission():
 			return False
 	try:
 		listOfRules = readFile(open(inputFile))

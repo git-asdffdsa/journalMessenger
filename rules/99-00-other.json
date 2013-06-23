@@ -1,0 +1,62 @@
+{
+    "error": {
+        "values": {
+            "priority": [
+                "read PRIORITY"
+            ],
+            "message": [
+                "read MESSAGE"
+            ],
+            "identifier": [
+                "read SYSLOG_IDENTIFIER"
+            ]
+        },
+        "filters": {
+            "PRIORITY": "[0-3]"
+        },
+        "output": "unrecognized error by {identifier} of priority {priority}: {message}"
+    },
+    "no_identifier_error": {
+        "values": {
+            "priority": [
+                "read PRIORITY"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "",
+            "PRIORITY": "[0-3]",
+            "MESSAGE": ""
+        },
+        "output": "there has been an error of the priority {priority}"
+    },
+    "other": {
+        "values": {
+            "priority": [
+                "read PRIORITY"
+            ],
+            "message": [
+                "read MESSAGE"
+            ],
+            "identifier": [
+                "read SYSLOG_IDENTIFIER"
+            ]
+        },
+        "filters": {},
+        "output": "unrecognized output by {identifier} of priority {priority}: {message}"
+    },
+    "no_message_error": {
+        "values": {
+            "priority": [
+                "read PRIORITY"
+            ],
+            "identifier": [
+                "read IDENTIFIER"
+            ]
+        },
+        "filters": {
+            "PRIORITY": "[0-3]",
+            "MESSAGE": ""
+        },
+        "output": "{identifier} had an error of the priority {priority}"
+    }
+}

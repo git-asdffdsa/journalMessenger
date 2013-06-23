@@ -1,0 +1,46 @@
+{
+    "ntfs_unmount": {
+        "values": {
+            "device": [
+                "read MESSAGE",
+                "regex Unmounting\\  (\\/|\\w)+",
+                "cutl 6"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "ntfs-3g",
+            "PRIORITY": "5",
+            "MESSAGE": "Unmounting\\ (\\/|\\w)+\\ \\(\\w+\\)"
+        },
+        "output": "ntfs unmounted {device}"
+    },
+    "ntfs_ownership": {
+        "values": {
+            "config_type": [
+                "read MESSAGE",
+                "regex \\d$"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "ntfs-3g",
+            "PRIORITY": "5",
+            "MESSAGE": "Global\\ ownership\\ and\\ permissions\\ enforced,\\ configuration\\ type\\ \\d"
+        },
+        "output": "ntfs permission & ownership enforced\\nconfiguration type {config_type}"
+    },
+    "ntfs_using_fuse": {
+        "values": {
+            "number": [
+                "read MESSAGE",
+                "regex \\ \\d\\d?$",
+                "cutl 1"
+            ]
+        },
+        "filters": {
+            "SYSLOG_IDENTIFIER": "ntfs-3g",
+            "PRIORITY": "5",
+            "MESSAGE": "Version\\ 20\\d\\d\\.\\d\\d?\\.\\d\\d?\\ external\\ FUSE\\ \\d\\d?"
+        },
+        "output": "ntfs is using FUSE {number}"
+    }
+}
